@@ -1,0 +1,59 @@
+# LLM-ASR-Correction dependencies
+
+# ML
+torch>=2.2.2
+torchaudio>=2.0.0
+transformers>=4.35.0
+
+# ASR models
+openai-whisper>=20231117a
+# note: add more models later
+
+# LLM APIs for correction
+openai>=1.0.0
+anthropic>=0.5.0
+
+# Audio processing
+librosa>=0.10.0
+soundfile>=0.12.0
+pydub>=0.25.1
+
+# Metrics
+jiwer>=3.0.0         # WER
+editdistance>=0.6.0  # Levenshtein distance
+
+# Data processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# For datasets
+datasets>=2.14.0     # HuggingFace datasets
+huggingface-hub>=1.3.4
+
+# configs
+python-dotenv>=1.0.0
+pyyaml>=6.0
+hydra-core>=1.3.0
+
+# utils
+tqdm>=4.65.0
+rich>=13.0.0         # for console output
+typer>=0.9.0         # CLI
+
+# Development
+pytest>=7.3.0
+pytest-cov>=4.1.0
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0
+mypy>=1.4.0
+
+# for notebooks
+jupyter>=1.0.0
+ipywidgets>=8.0.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# Logging
+loguru>=0.7.0
