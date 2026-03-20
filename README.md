@@ -1,124 +1,114 @@
 # LLM-ASR-Correction
 
-<div align="center">
+[![Status](https://img.shields.io/badge/status-in--development-yellow.svg)]()
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-![Status](https://img.shields.io/badge/Status-In%20Development-yellow?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
-**Распознавание речи с корректировкой ошибок с использованием больших языковых моделей**
+Распознавание речи с корректировкой ошибок с использованием больших языковых моделей
 
 *Дипломная работа — ВШЭ Нижний Новгород, 2026*
-
-[Описание](#описание)
-
-</div>
-
----
-
-## Статус проекта
-
-> **DEMO — В РАЗРАБОТКЕ**
-> 
-> Проект находится на этапе активной разработки. API и структура могут меняться.
-
-| Этап | Статус |
-|------|--------|
-| 1. Исследование ASR моделей | Выполнено |
-| 2. Подбор датасетов | Выполнено |
-| 3. Baseline эксперименты (WER) | В работе |
-| 4. LLM коррекция ошибок | Запланировано |
 
 ---
 
 ## Описание
 
-Исследование эффективности использования **больших языковых моделей** (GPT-4, Claude) для постобработки и коррекции ошибок в выходных данных систем автоматического распознавания речи (ASR).
+Исследование эффективности больших языковых моделей (LLM) для коррекции ошибок автоматического распознавания речи (ASR). Проект сравнивает несколько ASR-моделей на русских и английских датасетах, применяет LLM-коррекцию и анализирует улучшение метрик качества.
 
-### Гипотеза
+## Организация проекта
 
-LLM способны исправлять типичные ошибки ASR (омофоны, редкие слова, контекстные ошибки), снижая WER на 10-30%.
+Проект построен как научно-исследовательская работа с двумя параллельными слоями:
 
----
+- **`src/` + `scripts/`** — модульный код: ASR-обёртки, LLM-клиенты, метрики, утилиты. Переиспользуемые компоненты, покрытые тестами.
+- **`notebooks/`** — Jupyter-ноутбуки для каждого этапа исследования. Ноутбуки импортируют модули из `src/` и сохраняют результаты в `experiments/`.
 
-## Технологии
+По мере развития работы добавляются новые ноутбуки, расширяются модули в `src/`, а результаты накапливаются в `experiments/results/`.
 
-<div align="center">
+## Результаты baseline
 
-### ASR Models
-![Whisper](https://img.shields.io/badge/OpenAI-Whisper-412991?style=flat-square&logo=openai&logoColor=white)
-![GigaAM](https://img.shields.io/badge/Sber-GigaAM-21A038?style=flat-square)
+| Модель | Датасет | Язык | Mean WER | Mean CER |
+|--------|---------|------|----------|----------|
+| Whisper-base | LibriSpeech test-clean | EN | 5.69% | 2.41% |
+| Whisper-base | FLEURS | RU | 22.26% | 6.25% |
+| GigaAM-v2-CTC | FLEURS | RU | 9.84% | 4.38% |
 
-### LLM Correction
-![GPT-4](https://img.shields.io/badge/OpenAI-GPT--4-412991?style=flat-square&logo=openai&logoColor=white)
-![Claude](https://img.shields.io/badge/Anthropic-Claude-D4A574?style=flat-square)
+## Результаты LLM-коррекции (Llama 3.1 8B)
 
-### Stack
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
-![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-yellow?style=flat-square)
-![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)
-
-</div>
-
----
-
-## Модели ASR
-
-| Модель | Язык | Параметры | Описание |
-|--------|------|-----------|----------|
-| **Whisper large-v3** | Multilingual | 1.5B | OpenAI, SOTA multilingual ASR |
-| **GigaAM-v3** | Russian | - | SberDevices, SOTA для русского |
-
----
-
-## Датасеты
-
-### Русский язык
-
-| Датасет | Размер | Описание |
-|---------|--------|----------|
-| **Golos** | ~1240 ч | Сбер, разнообразная речь |
-| **Russian LibriSpeech** | ~98 ч | Аудиокниги |
-| **Common Voice RU** | ~200+ ч | Краудсорсинг Mozilla |
-
-### Английский язык
-
-| Датасет | Размер | Описание |
-|---------|--------|----------|
-| **LibriSpeech** | ~960 ч | Аудиокниги |
-| **Common Voice EN** | ~2000+ ч | Краудсорсинг Mozilla |
-
----
+| Эксперимент | Baseline WER | + LLM | Изменение |
+|-------------|-------------|-------|-----------|
+| Whisper EN | 11.39% | 16.14% | -41.8% |
+| Whisper RU | 23.68% | 21.22% | +10.4% |
+| GigaAM RU | 16.97% | 19.82% | -16.8% |
 
 ## Структура проекта
-
-```
+```text
 llm-asr-correction/
-├── src/
-│   ├── asr/                       # ASR транскрибаторы
-│   │   ├── base.py                # Базовый класс
-│   │   ├── whisper_transcriber.py # Whisper
-│   │   └── gigaam_transcriber.py  # GigaAM
-│   ├── correction/                # LLM корректоры
-│   ├── evaluation/                # Метрики
-│   │   └── metrics.py             # WER, CER
-│   └── utils/                     # Утилиты
-│       └── config.py              # Конфигурация
-├── data/                          # Датасеты (не в git)
-├── experiments/                   # Результаты
-├── notebooks/                     # Jupyter ноутбуки
-├── requirements.txt
-├── pyproject.toml
-└── README.md
+├── src/                        # Исходный код (модули)
+│   ├── asr/                    # ASR модели (Whisper, GigaAM)
+│   ├── correction/             # LLM коррекция ошибок
+│   ├── evaluation/             # Метрики (WER, CER)
+│   └── utils/                  # Конфигурация, аудио, датасеты
+├── scripts/                    # Скрипты запуска экспериментов
+├── notebooks/                  # Jupyter-ноутбуки исследования
+│   └── 01_baseline_asr.ipynb   # Демо: baseline + LLM-коррекция
+├── experiments/                # Результаты экспериментов
+│   ├── configs/                # Конфигурации запусков
+│   ├── results/                # CSV с метриками
+│   └── logs/                   # Логи экспериментов
+├── tests/                      # Unit-тесты
+├── data/                       # Датасеты (не коммитятся)
+│   ├── raw/                    # Исходные аудиофайлы
+│   ├── processed/              # Обработанные данные
+│   └── samples/                # Примеры для тестов
+└── docs/                       # Документация
 ```
 
----
+## Установка
+
+### Системные требования
+
+- Python 3.10+
+- CUDA-совместимый GPU (рекомендуется)
+- ffmpeg
+
+### Настройка окружения
+```bash
+git clone https://github.com/alexshevvv/llm-asr-correction.git
+cd llm-asr-correction
+python -m venv .venv
+source .venv/bin/activate  # Linux/macOS
+pip install -r requirements.txt
+cp env.example .env
+# Заполнить .env своими API-ключами
+```
+
+GigaAM устанавливается отдельно:
+```bash
+pip install git+https://github.com/salute-developers/GigaAM.git
+```
+
+### Получение API-ключей
+
+- **Groq** (бесплатно): [console.groq.com/keys](https://console.groq.com/keys)
+
+## Запуск тестов
+```bash
+pytest tests/ -v
+```
+
+## Дорожная карта
+
+- [x] Baseline ASR: Whisper + GigaAM на EN/RU датасетах
+- [x] LLM-коррекция: Llama 3.1 8B через Groq API
+- [ ] Бенчмарк LLM: GPT-4o-mini, Claude, Gemini, Llama 70B
+- [ ] Confidence-aware коррекция
+- [ ] Оптимизация промптов (few-shot, domain-specific)
+- [ ] Масштабирование до 500–1000 сэмплов
+- [ ] Анализ по типам ошибок
 
 ## Автор
 
-**Алексей Шевченко**
+**Алексей Шевченко** — ВШЭ Нижний Новгород
 
-Студент 3 курса, Программная инженерия  
-НИУ ВШЭ — Нижний Новгород
+## Лицензия
 
-[![GitHub](https://img.shields.io/badge/GitHub-alexshevvv-181717?style=flat-square&logo=github)](https://github.com/alexshevvv)
+MIT License
