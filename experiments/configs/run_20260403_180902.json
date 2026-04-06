@@ -1,0 +1,45 @@
+{
+  "timestamp": "20260403_180902",
+  "device": "cpu",
+  "whisper_model": "base",
+  "max_samples": 50,
+  "llm_models": [
+    {
+      "id": "Qwen/Qwen2.5-7B-Instruct",
+      "name": "Qwen2.5 7B"
+    },
+    {
+      "id": "Qwen/Qwen2.5-72B-Instruct",
+      "name": "Qwen2.5 72B"
+    },
+    {
+      "id": "openai/gpt-oss-120b",
+      "name": "GPT-OSS 120B"
+    },
+    {
+      "id": "Qwen/Qwen3-235B-A22B",
+      "name": "Qwen3 235B"
+    },
+    {
+      "id": "deepseek-ai/DeepSeek-V3-0324",
+      "name": "DeepSeek V3"
+    }
+  ],
+  "baselines": {
+    "whisper_en": {
+      "samples": 50,
+      "mean_wer": 0.06192952794421773,
+      "errors": 26
+    },
+    "whisper_ru": {
+      "samples": 50,
+      "mean_wer": 0.22197247451538285,
+      "errors": 47
+    },
+    "w2v2_ru": {
+      "samples": 50,
+      "mean_wer": 0.17799895154960527,
+      "errors": 44
+    }
+  }
+}
