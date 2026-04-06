@@ -9,10 +9,8 @@ def normalize_text(
     lowercase: bool = True,
     remove_punctuation: bool = True,
 ) -> str:
-    """Normalize text for WER/CER calculation.
-
-    Applies lowercasing and punctuation removal to ensure
-    fair comparison between reference and hypothesis.
+    """
+    Normalize text for WER/CER calculation.
 
     Args:
         text: Input text to normalize.
