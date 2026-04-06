@@ -29,9 +29,7 @@ except ImportError:
 class GigaAMASR(BaseASR):
     """Sber GigaAM ASR transcriber.
 
-    Conformer-based model (240M params), pretrained
-    on 50 000+ hours of Russian speech. State-of-the-art
-    open-source ASR for Russian language.
+    Conformer-based model (240M params)
 
     Attributes:
         model_name: GigaAM model variant.
@@ -67,9 +65,6 @@ class GigaAMASR(BaseASR):
         **kwargs,
     ) -> str:
         """Transcribe audio to text.
-
-        Truncates audio to 25s if longer (GigaAM limit).
-        Saves to temp WAV file (GigaAM requires paths).
 
         Args:
             audio: Audio waveform (float32).
