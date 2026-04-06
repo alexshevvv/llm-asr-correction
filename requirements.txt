@@ -1,7 +1,9 @@
 # ASR models
 openai-whisper>=20230314
+transformers>=4.45,<4.50
+accelerate>=0.26.0
 
-# GigaAM (requires Linux + CUDA + torch>=2.5)
+# GigaAM (Colab only, requires Linux + CUDA)
 # pip install git+https://github.com/salute-developers/GigaAM.git
 
 # Datasets
@@ -14,13 +16,17 @@ soundfile>=0.12.0
 # Evaluation metrics
 jiwer>=3.0.0
 
-# LLM API
-groq>=0.4.0
+# LLM API (HuggingFace Inference)
+openai>=1.12.0
 
 # Data processing
-numpy>=1.24.0
+numpy>=1.24.0,<2
 pandas>=2.0.0
 torch>=2.0.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.13.0
 
 # Utilities
 tqdm>=4.65.0
