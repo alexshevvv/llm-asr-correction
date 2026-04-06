@@ -1,36 +1,37 @@
 #!/usr/bin/env python3
-"""Dataset loaders for ASR experiments."""
+"""Dataset loading utilities."""
 
 import logging
+import os
 
 import numpy as np
 from datasets import load_dataset
 
-from src.utils.audio import resample_audio
+import librosa
 
 logger = logging.getLogger(__name__)
+
+DATA_DIR = os.path.join('data', 'raw')
 
 
 def load_librispeech(
     max_samples: int = 50,
 ) -> list[dict]:
     """
-    Load LibriSpeech test-clean dataset.
-
-    Uses streaming to avoid downloading the full
-    dataset (~28 GB).
+    Load LibriSpeech test-clean.
 
     Args:
-        max_samples: Maximum number of samples.
+        max_samples: Max samples to load.
 
     Returns:
-        List of dicts with audio, sample_rate,
-        reference, and id keys.
+        List of sample dicts.
     """
     logger.info('Loading LibriSpeech test-clean...')
+    os.makedirs(DATA_DIR, exist_ok=True)
     ds = load_dataset(
         'librispeech_asr', 'clean',
         split='test', streaming=True,
+        cache_dir=DATA_DIR,
     )
 
     samples = []
@@ -46,7 +47,7 @@ def load_librispeech(
             'id': item.get('id', len(samples)),
         })
 
-    logger.info(f'Loaded {len(samples)} EN samples')
+    logger.info('Loaded %d EN samples', len(samples))
     return samples
 
 
@@ -54,35 +55,34 @@ def load_fleurs_ru(
     max_samples: int = 50,
 ) -> list[dict]:
     """
-    Load Google FLEURS Russian dataset.
-
-    Uses streaming to minimize disk usage.
+    Load Google FLEURS Russian.
 
     Args:
-        max_samples: Maximum number of samples.
+        max_samples: Max samples to load.
 
     Returns:
-        List of dicts with audio, sample_rate,
-        reference, and id keys.
+        List of sample dicts.
     """
     logger.info('Loading FLEURS Russian...')
+    os.makedirs(DATA_DIR, exist_ok=True)
     ds = load_dataset(
         'google/fleurs', 'ru_ru',
         split='test', streaming=True,
         trust_remote_code=True,
+        cache_dir=DATA_DIR,
     )
 
     samples = []
     for item in ds:
         if len(samples) >= max_samples:
             break
-        audio = item['audio']['array'].astype(
-            np.float32,
-        )
+        audio = item['audio']['array'].astype(np.float32)
         sr = item['audio']['sampling_rate']
 
         if sr != 16000:
-            audio = resample_audio(audio, sr, 16000)
+            audio = librosa.resample(
+                audio, orig_sr=sr, target_sr=16000,
+            )
             sr = 16000
 
         samples.append({
@@ -92,5 +92,5 @@ def load_fleurs_ru(
             'id': item.get('id', len(samples)),
         })
 
-    logger.info(f'Loaded {len(samples)} RU samples')
+    logger.info('Loaded %d RU samples', len(samples))
     return samples
