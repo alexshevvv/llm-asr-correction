@@ -6,7 +6,7 @@ import logging
 import pandas as pd
 from tqdm.auto import tqdm
 
-from src.correction import correct_with_llm
+from src.correction.llm_client import correct_with_llm
 from src.evaluation import calculate_cer
 from src.evaluation import calculate_wer
 
@@ -17,18 +17,18 @@ def run_llm_correction(
     client,
     baseline_df: pd.DataFrame,
     language: str = 'en',
-    model: str = 'llama-3.1-8b-instant',
+    model: str = 'Qwen/Qwen2.5-72B-Instruct',
+    model_name: str = '',
 ) -> pd.DataFrame:
     """
-    Apply LLM correction to ASR outputs with errors.
-
-    Only processes samples where WER > 0.
+    Apply LLM correction to ASR outputs.
 
     Args:
-        client: LLM API client (Groq).
+        client: HF Inference API client.
         baseline_df: DataFrame with baseline results.
         language: Language code (en or ru).
-        model: LLM model name.
+        model: HuggingFace model identifier.
+        model_name: Display name for results.
 
     Returns:
         DataFrame with correction results.
@@ -37,17 +37,13 @@ def run_llm_correction(
         baseline_df['wer'] > 0
     ].copy()
 
-    logger.info(
-        'Correcting %d samples with errors',
-        len(errors_df),
-    )
-
     if len(errors_df) == 0:
         logger.info('No errors to correct')
         return pd.DataFrame()
 
+    label = model_name or model
     results = []
-    desc = f'LLM Correction ({language})'
+    desc = f'{label} ({language})'
 
     for _, row in tqdm(
         errors_df.iterrows(),
@@ -78,6 +74,7 @@ def run_llm_correction(
             'cer_corrected': new_cer,
             'wer_improved': row['wer'] > new_wer,
             'wer_degraded': row['wer'] < new_wer,
+            'llm_model': label,
             'model': row['model'],
             'language': language,
         })
