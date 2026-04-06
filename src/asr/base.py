@@ -8,12 +8,7 @@ import numpy as np
 
 
 class BaseASR(ABC):
-    """
-    Abstract interface for ASR transcribers.
-
-    All ASR model wrappers must inherit from this class
-    and implement the transcribe method.
-    """
+    """Abstract interface for ASR transcribers."""
 
     @abstractmethod
     def transcribe(
