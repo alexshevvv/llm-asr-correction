@@ -6,6 +6,8 @@ import tempfile
 import numpy as np
 import soundfile as sf
 
+import librosa
+
 
 def save_temp_wav(
     audio: np.ndarray,
@@ -13,9 +15,6 @@ def save_temp_wav(
 ) -> str:
     """
     Save numpy audio array to a temporary WAV file.
-
-    GigaAM requires file paths, not numpy arrays,
-    so we write to a temp file before transcription.
 
     Args:
         audio: Audio waveform as numpy array.
@@ -49,8 +48,6 @@ def resample_audio(
     """
     if orig_sr == target_sr:
         return audio
-
-    import librosa
 
     return librosa.resample(
         audio, orig_sr=orig_sr, target_sr=target_sr,
