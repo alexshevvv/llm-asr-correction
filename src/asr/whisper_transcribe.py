@@ -15,9 +15,6 @@ class WhisperASR(BaseASR):
     """
     OpenAI Whisper ASR transcriber.
 
-    Supports 99 languages via encoder-decoder
-    Transformer architecture.
-
     Attributes:
         model_name: Whisper model size.
         device: Inference device.
