@@ -59,9 +59,7 @@ data/processed/
 *.safetensors
 models/
 
-# Experiment outputs
-experiments/results/*.csv
-experiments/results/*.json
+# Experiment cache
 experiments/logs/*.log
 
 # OS files
