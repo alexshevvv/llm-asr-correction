@@ -91,3 +91,5 @@ logs/
 *.temp
 tmp/
 temp/
+
+*.bak
