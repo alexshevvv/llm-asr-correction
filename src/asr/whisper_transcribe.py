@@ -6,6 +6,8 @@ import logging
 import numpy as np
 import whisper
 
+import torch
+
 from src.asr.base import BaseASR
 
 logger = logging.getLogger(__name__)
@@ -23,7 +25,7 @@ class WhisperASR(BaseASR):
     def __init__(
         self,
         model_name: str = 'base',
-        device: str = 'cuda',
+        device: str | None = None,
     ) -> None:
         """
         Initialize and load Whisper model.
@@ -32,7 +34,15 @@ class WhisperASR(BaseASR):
             model_name: Model size
                 (tiny/base/small/medium/large).
             device: Inference device (cuda/cpu).
+                If None, autodetect based on torch.
         """
+
+        if device is None:
+            device = (
+                'cuda'
+                if torch.cuda.is_available()
+                else 'cpu'
+            )
         self.model_name = model_name
         self.device = device
         logger.info(
