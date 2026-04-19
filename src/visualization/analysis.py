@@ -17,16 +17,6 @@ def build_analysis_df(
     """
     Assemble a unified DataFrame from benchmark result dict.
 
-    Args:
-        results: Mapping '<llm>__<asr_key>__<dataset_key>' -> df.
-        asr_registry: ASR metadata dict (from registry_data).
-        datasets_registry: Datasets metadata dict.
-
-    Returns:
-        DataFrame with one row per experiment. Columns:
-        LLM, ASR, ASR_key, Dataset, Dataset_key, Experiment,
-        Language, Samples, Baseline WER, Corrected WER,
-        WER Change (%), Improved, Degraded, Unchanged.
     """
 
     rows = []
@@ -50,7 +40,8 @@ def build_analysis_df(
 
         asr_display = asr_meta.get('display_name', asr_key)
         ds_language = ds_meta.get('language', '?')
-        experiment = f'{asr_display} / {ds_language.upper()}'
+        ds_display = ds_meta.get('display_name', dataset_key)
+        experiment = f'{asr_display} / {ds_display}'
 
         rows.append({
             'LLM': llm_name,
