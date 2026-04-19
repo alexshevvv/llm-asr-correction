@@ -19,6 +19,9 @@ from src.asr.registry_data import ASR_REGISTRY
 from src.correction.llm_client import create_client
 from src.utils.datasets_registry_data import DATASETS_REGISTRY
 from src.visualization.analysis import build_analysis_df
+from src.visualization import plot_all
+from scripts.benchmark_save import save_correction_csvs
+
 
 load_dotenv()
 
@@ -68,6 +71,10 @@ def main() -> int:
     )
     analysis_df.to_csv(csv_path, index=False)
     logger.info('Saved analysis CSV: %s', csv_path)
+
+    save_correction_csvs(results, RESULTS_DIR)
+
+    plot_all(analysis_df, baselines)
 
     print(f'\nAnalysis: {len(analysis_df)} rows')
     print(analysis_df[[
