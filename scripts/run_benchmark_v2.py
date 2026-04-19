@@ -2,17 +2,12 @@
 """
 Registry-driven benchmark: baseline ASR + LLM correction.
 
-End-to-end script wiring together the new architecture:
-- Baseline matrix via scripts.benchmark_baselines_v2
-- LLM correction via scripts.benchmark_correction_v2
-- Analysis DataFrame via src.visualization.analysis
-
-Requires HF_TOKEN in .env. Without it, only baseline runs.
 """
 
 import logging
 import os
 import sys
+from datetime import datetime
 
 from dotenv import load_dotenv
 
@@ -27,9 +22,22 @@ from src.visualization.analysis import build_analysis_df
 
 load_dotenv()
 
+RESULTS_DIR = os.path.join('experiments', 'results')
+LOG_DIR = os.path.join('experiments', 'logs')
+
+os.makedirs(RESULTS_DIR, exist_ok=True)
+os.makedirs(LOG_DIR, exist_ok=True)
+
+timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+log_path = os.path.join(LOG_DIR, f'run_{timestamp}.log')
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s | %(levelname)s | %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(log_path),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -54,11 +62,21 @@ def main() -> int:
     analysis_df = build_analysis_df(
         results, ASR_REGISTRY, DATASETS_REGISTRY,
     )
-    print(f'\nAnalysis DataFrame: {len(analysis_df)} rows')
+
+    csv_path = os.path.join(
+        RESULTS_DIR, f'analysis_{timestamp}.csv',
+    )
+    analysis_df.to_csv(csv_path, index=False)
+    logger.info('Saved analysis CSV: %s', csv_path)
+
+    print(f'\nAnalysis: {len(analysis_df)} rows')
     print(analysis_df[[
-        'LLM', 'ASR', 'Language',
-        'Baseline WER', 'Corrected WER', 'WER Change (%)',
+        'LLM', 'ASR', 'Dataset', 'Language',
+        'Baseline WER', 'Corrected WER',
+        'WER Change (%)',
     ]].to_string(index=False))
+    print(f'\nResults saved to {RESULTS_DIR}/')
+    print(f'Log saved to {log_path}')
     return 0
 
 
