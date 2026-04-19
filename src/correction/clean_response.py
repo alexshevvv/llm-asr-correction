@@ -7,15 +7,29 @@ PREFIXES = [
     'Corrected:', 'Corrected text:',
     'Here is', "Here's",
     'The corrected', 'Fixed:',
+    'The original text',
     'Исправленный текст:',
     'Исправлено:', 'Вот исправленный',
     'Since the original', 'It looks like',
 ]
 
 TAIL_PATTERN = re.compile(
-    r'\s*\((?:Note|Примечание)[^)]*\)\s*$',
+    r'\s*\((?:Note|Примечание|Текст не содержит)'
+    r'[\s\S]*?\)\s*$',
     re.IGNORECASE,
 )
+
+REFUSAL_MARKERS = [
+    'already correct',
+    'appears correct',
+    'appears to be correct',
+    'no ASR errors',
+    'no obvious ASR errors',
+    'does not contain any',
+    'не содержит ошибок',
+    'исправления не требуются',
+    'ошибок не обнаружено',
+]
 
 
 def clean_response(text: str, original: str) -> str:
@@ -25,6 +39,11 @@ def clean_response(text: str, original: str) -> str:
     """
     if not text:
         return original
+
+    text_lower = text.lower()
+    for marker in REFUSAL_MARKERS:
+        if marker in text_lower:
+            return original
 
     text = TAIL_PATTERN.sub('', text).strip()
 
