@@ -3,7 +3,6 @@
 
 import os
 
-import pandas as pd
 import seaborn as sns
 
 RESULTS_DIR = os.path.join('experiments', 'results')
@@ -14,36 +13,16 @@ sns.set_theme(
     font_scale=1.1,
 )
 
+ASR_GROUPS = {
+    'Whisper base': ['Whisper base'],
+    'Whisper medium': ['Whisper medium'],
+    'GigaAM family': [
+        'GigaAM v2 CTC',
+        'GigaAM v2 RNNT',
+    ],
+    'Wav2Vec2 family': [
+        'Wav2Vec2 XLS-R 1B',
+        'Wav2Vec2 XLS-R 1B EN',
+    ],
+}
 
-def build_viz_df(results: dict) -> pd.DataFrame:
-    """
-    Build DataFrame for visualizations.
-
-    Args:
-        results: Dict of correction DataFrames.
-
-    Returns:
-        Summary DataFrame for plotting.
-    """
-    rows = []
-    for key, df in results.items():
-        if len(df) == 0:
-            continue
-        llm, asr = key.split('__')
-        bl = df['wer_baseline'].mean()
-        cr = df['wer_corrected'].mean()
-        rows.append({
-            'LLM': llm,
-            'ASR': asr,
-            'WER Change (%)': (bl - cr) / bl * 100,
-            'Baseline WER': bl,
-            'Corrected WER': cr,
-            'Improved (%)': (
-                df['wer_improved'].mean() * 100
-            ),
-            'Degraded (%)': (
-                df['wer_degraded'].mean() * 100
-            ),
-        })
-
-    return pd.DataFrame(rows)

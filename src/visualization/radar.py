@@ -6,26 +6,35 @@ import os
 from math import pi
 
 import matplotlib.pyplot as plt
+import pandas as pd
 import seaborn as sns
 
 from src.visualization.common import RESULTS_DIR
-from src.visualization.common import build_viz_df
 
 logger = logging.getLogger(__name__)
 
+RADAR_MIN = -200
+RADAR_MAX = 100
 
-def plot_radar(results: dict) -> None:
+
+def plot_radar(analysis_df: pd.DataFrame) -> None:
     """
-    Plot LLM performance radar chart.
+    Plot LLM performance radar aggregated by Dataset.
 
     Args:
-        results: Dict of correction DataFrames.
+        analysis_df: Unified analysis DataFrame.
     """
-    viz_df = build_viz_df(results)
-    pivot = viz_df.pivot(
-        index='LLM',
-        columns='ASR',
-        values='WER Change (%)',
+    radar_data = (
+        analysis_df
+        .groupby(['LLM', 'Dataset'])['WER Change (%)']
+        .mean()
+        .reset_index()
+    )
+    radar_data['clipped'] = radar_data['WER Change (%)'].clip(
+        lower=RADAR_MIN, upper=RADAR_MAX,
+    )
+    pivot = radar_data.pivot(
+        index='LLM', columns='Dataset', values='clipped',
     )
 
     categories = list(pivot.columns)
@@ -43,28 +52,26 @@ def plot_radar(results: dict) -> None:
     colors = sns.color_palette('husl', len(pivot))
 
     for i, (llm, row) in enumerate(pivot.iterrows()):
-        values = row.values.tolist()
-        values += values[:1]
+        values = row.values.tolist() + row.values[:1].tolist()
         ax.plot(
-            angles,
-            values,
-            'o-',
-            linewidth=2,
-            label=llm,
-            color=colors[i],
+            angles, values, 'o-',
+            linewidth=2, label=llm, color=colors[i],
         )
         ax.fill(angles, values, alpha=0.1, color=colors[i])
 
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(categories, fontsize=9)
-    ax.set_title(
-        'LLM Performance Radar\n'
-        '(WER Change % per ASR)',
-        fontsize=14,
-        fontweight='bold',
-        y=1.08,
+    ax.plot(
+        angles, [0] * len(angles),
+        color='black', linewidth=1,
+        linestyle='--', alpha=0.6,
     )
-
+    ax.set_ylim(RADAR_MIN, RADAR_MAX)
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(categories, fontsize=10)
+    ax.set_title(
+        'LLM Performance Radar by Dataset\n'
+        f'(clipped to [{RADAR_MIN}%, {RADAR_MAX}%])',
+        fontsize=14, fontweight='bold', y=1.08,
+    )
     ax.legend(
         loc='upper right',
         bbox_to_anchor=(1.3, 1.1),
