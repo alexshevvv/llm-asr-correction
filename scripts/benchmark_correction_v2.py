@@ -10,6 +10,7 @@ from src.correction.llm_client import correct_with_llm
 from src.correction.llm_registry_data import LLM_REGISTRY
 from src.correction.llm_registry_query import list_llm_models
 from src.evaluation.metrics import calculate_wer
+from src.utils.datasets_registry_data import DATASETS_REGISTRY
 
 logger = logging.getLogger(__name__)
 
@@ -44,7 +45,9 @@ def run_correction_matrix(
         llm_name = llm_meta['display_name']
 
         for bl_key, bl_df in baselines.items():
-            lang = 'ru' if '__fleurs_ru' in bl_key else 'en'
+            ds_key = bl_key.split('__')[1]
+            ds_meta = DATASETS_REGISTRY.get(ds_key, {})
+            lang = ds_meta.get('language', 'en')
             rows = []
             for _, r in bl_df.iterrows():
                 corrected = correct_with_llm(
