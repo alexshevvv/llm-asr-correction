@@ -44,7 +44,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-MAX_SAMPLES = 3
+MAX_SAMPLES = 30
 
 
 def main() -> int:
