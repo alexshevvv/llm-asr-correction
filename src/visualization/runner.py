@@ -8,6 +8,7 @@ import pandas as pd
 
 from src.visualization.baseline import plot_baseline_comparison
 from src.visualization.common import RESULTS_DIR
+from src.visualization.error_types import plot_error_types
 from src.visualization.heatmap import plot_heatmap
 from src.visualization.radar import plot_radar
 from src.visualization.scatter import plot_scatter
@@ -20,6 +21,7 @@ logger = logging.getLogger(__name__)
 def plot_all(
     analysis_df: pd.DataFrame,
     baselines: dict[str, pd.DataFrame],
+    results: dict[str, pd.DataFrame] | None = None,
 ) -> None:
     """
     Generate all plots.
@@ -27,6 +29,7 @@ def plot_all(
     Args:
         analysis_df: Unified analysis DataFrame.
         baselines: Dict of baseline DataFrames.
+        results: Dict of correction DataFrames.
     """
     os.makedirs(RESULTS_DIR, exist_ok=True)
     plot_baseline_comparison(baselines)
@@ -35,4 +38,6 @@ def plot_all(
     plot_scatter(analysis_df)
     plot_radar(analysis_df)
     plot_stacked_bar(analysis_df)
+    if results:
+        plot_error_types(baselines, results)
     logger.info('All plots saved to %s', RESULTS_DIR)

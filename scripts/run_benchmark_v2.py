@@ -74,7 +74,7 @@ def main() -> int:
 
     save_correction_csvs(results, RESULTS_DIR)
 
-    plot_all(analysis_df, baselines)
+    plot_all(analysis_df, baselines, results)
 
     print(f'\nAnalysis: {len(analysis_df)} rows')
     print(analysis_df[[
