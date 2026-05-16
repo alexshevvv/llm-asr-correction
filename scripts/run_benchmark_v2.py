@@ -7,6 +7,7 @@ Registry-driven benchmark: baseline ASR + LLM correction.
 import logging
 import os
 import sys
+import pandas as pd
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -15,8 +16,12 @@ from scripts.benchmark_baselines_v2 import run_baseline_matrix
 from scripts.benchmark_correction_v2 import (
     run_correction_matrix,
 )
+from src.correction.phonetic_filter import (
+    apply_phonetic_filter,
+)
 from src.asr.registry_data import ASR_REGISTRY
 from src.correction.llm_client import create_client
+from src.evaluation.metrics import calculate_wer
 from src.utils.datasets_registry_data import DATASETS_REGISTRY
 from src.visualization.analysis import build_analysis_df
 from src.visualization import plot_all
@@ -62,6 +67,25 @@ def main() -> int:
 
     client = create_client()
     results = run_correction_matrix(baselines, client)
+    for key, df in results.items():
+        if len(df) == 0:
+            continue
+        filtered_rows = []
+        for _, row in df.iterrows():
+            filtered_text, _ = apply_phonetic_filter(
+                row['hypothesis'], row['corrected'],
+            )
+            filtered_wer = calculate_wer(
+                row['reference'], filtered_text,
+            )
+            filtered_rows.append({
+                **row.to_dict(),
+                'filtered': filtered_text,
+                'wer_filtered': filtered_wer,
+            })
+        results[key] = pd.DataFrame(filtered_rows)
+    logger.info('Phonetic filter applied to %d results', len(results))
+
     analysis_df = build_analysis_df(
         results, ASR_REGISTRY, DATASETS_REGISTRY,
     )
