@@ -14,6 +14,8 @@ from src.utils.datasets_registry_data import DATASETS_REGISTRY
 
 logger = logging.getLogger(__name__)
 
+CONFIDENCE_THRESHOLD = -0.35
+
 
 def run_correction_matrix(
     baselines: dict[str, pd.DataFrame],
@@ -31,7 +33,8 @@ def run_correction_matrix(
         Dict '<llm>__<asr>__<dataset>' -> correction DataFrame
         with columns 'reference', 'hypothesis', 'corrected',
         'wer_baseline', 'wer_corrected',
-        'wer_improved', 'wer_degraded'.
+        'wer_improved', 'wer_degraded', 'confidence',
+        'confidence_skipped'
     """
 
     results = {}
@@ -50,13 +53,22 @@ def run_correction_matrix(
             lang = ds_meta.get('language', 'en')
             rows = []
             for _, r in bl_df.iterrows():
-                corrected = correct_with_llm(
-                    client=client,
-                    text=r['hypothesis'],
-                    language=lang,
-                    model=hf_id,
+                conf = r.get('confidence', None)
+                if (
+                    conf is not None
+                    and conf > CONFIDENCE_THRESHOLD
+                ):
+                    corrected = r['hypothesis']
+                else:
+                    corrected = correct_with_llm(
+                        client=client,
+                        text=r['hypothesis'],
+                        language=lang,
+                        model=hf_id,
+                    )
+                wer_c = calculate_wer(
+                    r['reference'], corrected,
                 )
-                wer_c = calculate_wer(r['reference'], corrected)
                 rows.append({
                     'reference': r['reference'],
                     'hypothesis': r['hypothesis'],
@@ -65,6 +77,11 @@ def run_correction_matrix(
                     'wer_corrected': wer_c,
                     'wer_improved': wer_c < r['wer'],
                     'wer_degraded': wer_c > r['wer'],
+                    'confidence': conf,
+                    'confidence_skipped': (
+                        conf is not None
+                        and conf > CONFIDENCE_THRESHOLD
+                    ),
                 })
 
             df = pd.DataFrame(rows)

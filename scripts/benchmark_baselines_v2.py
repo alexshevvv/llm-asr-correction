@@ -53,16 +53,32 @@ def run_baseline_matrix(
             samples = load_dataset_by_key(ds_key, max_samples)
             rows = []
             for sample in samples:
-                hyp = model.transcribe(
-                    sample['audio'],
-                    sample_rate=sample['sample_rate'],
-                    language=ds_meta['language'],
+                has_conf = hasattr(
+                    model, 'transcribe_with_confidence',
                 )
-                wer_val = calculate_wer(sample['reference'], hyp)
+                if has_conf:
+                    hyp, confidence = (
+                        model.transcribe_with_confidence(
+                            sample['audio'],
+                            sample_rate=sample['sample_rate'],
+                            language=ds_meta['language'],
+                        )
+                    )
+                else:
+                    hyp = model.transcribe(
+                        sample['audio'],
+                        sample_rate=sample['sample_rate'],
+                        language=ds_meta['language'],
+                    )
+                    confidence = None
+                wer_val = calculate_wer(
+                    sample['reference'], hyp,
+                )
                 rows.append({
                     'reference': sample['reference'],
                     'hypothesis': hyp,
                     'wer': wer_val,
+                    'confidence': confidence
                 })
             df = pd.DataFrame(rows)
             key = f'{asr_key}__{ds_key}'
