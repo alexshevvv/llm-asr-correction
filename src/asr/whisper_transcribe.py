@@ -77,3 +77,28 @@ class WhisperASR(BaseASR):
             fp16=(self.device == 'cuda'),
         )
         return result['text'].strip()
+
+    def transcribe_with_confidence(
+        self,
+        audio: np.ndarray,
+        language: str = 'en',
+        **kwargs,
+    ) -> tuple[str, float]:
+        """
+        Transcribe audio and return confidence.
+
+        """
+        result = self.model.transcribe(
+            audio,
+            language=language,
+            fp16=(self.device == 'cuda'),
+        )
+        text = result['text'].strip()
+        segments = result.get('segments', [])
+        if segments:
+            avg_logprob = np.mean([
+                s['avg_logprob'] for s in segments
+            ])
+        else:
+            avg_logprob = -1.0
+        return text, avg_logprob
