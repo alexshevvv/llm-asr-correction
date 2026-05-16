@@ -1,0 +1,43 @@
+LLM,ASR,ASR_key,Dataset,Dataset_key,Experiment,Language,Samples,Baseline WER,Corrected WER,WER Change (%),Improved,Degraded,Unchanged
+DeepSeek V3,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.023809523809523808,0.0,0,0,2
+DeepSeek V3,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.1068840579710145,0.0,0,0,2
+DeepSeek V3,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+DeepSeek V3,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.023809523809523808,66.66666666666666,1,0,1
+DeepSeek V3,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+DeepSeek V3,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+DeepSeek V3,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.302536231884058,21.226415094339618,1,1,0
+GPT-OSS 120B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.34523809523809523,-1350.0,0,1,1
+GPT-OSS 120B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.1068840579710145,0.0,0,0,2
+GPT-OSS 120B,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+GPT-OSS 120B,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.023809523809523808,66.66666666666666,1,0,1
+GPT-OSS 120B,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+GPT-OSS 120B,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+GPT-OSS 120B,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.34239130434782605,10.84905660377359,1,0,1
+Llama 3.3 70B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.023809523809523808,0.0,0,0,2
+Llama 3.3 70B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.1068840579710145,0.0,0,0,2
+Llama 3.3 70B,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+Llama 3.3 70B,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.0,100.0,1,0,1
+Llama 3.3 70B,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+Llama 3.3 70B,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+Llama 3.3 70B,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.38405797101449274,0.0,0,0,2
+Qwen2.5 72B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.08333333333333333,-250.0,0,2,0
+Qwen2.5 72B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.06521739130434782,38.983050847457626,1,0,1
+Qwen2.5 72B,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+Qwen2.5 72B,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.023809523809523808,66.66666666666666,1,0,1
+Qwen2.5 72B,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+Qwen2.5 72B,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+Qwen2.5 72B,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.34239130434782605,10.84905660377359,1,0,1
+Qwen2.5 7B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.023809523809523808,0.0,0,0,2
+Qwen2.5 7B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.1068840579710145,0.0,0,0,2
+Qwen2.5 7B,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+Qwen2.5 7B,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.23809523809523808,-233.33333333333334,0,1,1
+Qwen2.5 7B,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+Qwen2.5 7B,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+Qwen2.5 7B,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.34239130434782605,10.84905660377359,1,0,1
+Qwen3 235B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,FLEURS Russian,fleurs_ru,Wav2Vec2 XLS-R 1B / FLEURS Russian,ru,2,0.023809523809523808,0.023809523809523808,0.0,0,0,2
+Qwen3 235B,Wav2Vec2 XLS-R 1B,wav2vec2_xlsr_1b_ru,SOVA audiobooks,sova_audiobooks_ru,Wav2Vec2 XLS-R 1B / SOVA audiobooks,ru,2,0.1068840579710145,0.043478260869565216,59.32203389830508,2,0,0
+Qwen3 235B,Whisper base,whisper_base,FLEURS English,fleurs_en,Whisper base / FLEURS English,en,2,0.09774436090225563,0.09774436090225563,0.0,0,0,2
+Qwen3 235B,Whisper base,whisper_base,FLEURS Russian,fleurs_ru,Whisper base / FLEURS Russian,ru,2,0.07142857142857142,0.047619047619047616,33.33333333333333,1,0,1
+Qwen3 235B,Whisper base,whisper_base,LibriSpeech test-clean,librispeech_test_clean,Whisper base / LibriSpeech test-clean,en,2,0.0625,0.0625,0.0,0,0,2
+Qwen3 235B,Whisper base,whisper_base,LibriSpeech test-other,librispeech_test_other,Whisper base / LibriSpeech test-other,en,2,0.1111111111111111,0.1111111111111111,0.0,0,0,2
+Qwen3 235B,Whisper base,whisper_base,SOVA audiobooks,sova_audiobooks_ru,Whisper base / SOVA audiobooks,ru,2,0.38405797101449274,0.2554347826086957,33.49056603773584,2,0,0
