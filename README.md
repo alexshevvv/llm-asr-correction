@@ -5,16 +5,16 @@
 [![HuggingFace](https://img.shields.io/badge/HuggingFace-Inference_API-FFD21E?logo=huggingface&logoColor=black)](https://huggingface.co/docs/inference-providers)
 [![Whisper](https://img.shields.io/badge/OpenAI-Whisper-412991?logo=openai&logoColor=white)](https://github.com/openai/whisper)
 [![Colab](https://img.shields.io/badge/Google-Colab-F9AB00?logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
-[![Tests](https://img.shields.io/badge/tests-94_passed-brightgreen?logo=pytest&logoColor=white)]()
+[![Tests](https://img.shields.io/badge/tests-113_passed-brightgreen?logo=pytest&logoColor=white)]()
 
 [![pandas](https://img.shields.io/badge/pandas-2.0+-150458?logo=pandas&logoColor=white)](https://pandas.pydata.org/)
 [![seaborn](https://img.shields.io/badge/seaborn-0.13+-4C72B0)](https://seaborn.pydata.org/)
 [![jiwer](https://img.shields.io/badge/jiwer-3.0+-blue)](https://github.com/jitsi/jiwer)
 [![Transformers](https://img.shields.io/badge/Transformers-4.45+-orange?logo=huggingface&logoColor=white)](https://huggingface.co/docs/transformers)
 
-Распознавание речи с корректировкой ошибок с использованием больших языковых моделей
+Распознавание речи с корректировкой ошибок с помощью больших языковых моделей
 
-*Дипломная работа --- ВШЭ Нижний Новгород, 2026*
+*Дипломная работа - ВШЭ Нижний Новгород, 2026*
 
 ---
 
@@ -23,32 +23,34 @@
 Исследование эффективности больших языковых моделей (LLM) для постобработки
 и коррекции ошибок автоматического распознавания речи (ASR).
 Проект реализует сравнительный бенчмарк на матрице
-**6 ASR x 6 LLM x 5 датасетов** для английского и русского языков.
+**6 ASR × 6 LLM × 5 датасетов** для английского и русского языков.
 
 ### Главный тезис
 
 Предлагается двухкомпонентный метод LLM-коррекции ASR:
-**(1)** confidence-aware вызов --- применение LLM только к низкоуверенным фрагментам,
-**(2)** фонетическая фильтрация замен --- защита от галлюцинаций LLM.
+**(1)** confidence-aware вызов - применение LLM только к низкоуверенным фрагментам
+(avg_logprob Whisper, порог -0.35),
+**(2)** фонетическая фильтрация замен - post-hoc фильтр на основе расстояния
+Левенштейна для защиты от галлюцинаций LLM.
 Метод оценивается на сравнительном бенчмарке с детализацией по типам ошибок
-и устойчивостью к шуму.
+и абляционным исследованием вклада каждого компонента.
 
 ## Организация проекта
 
 Проект построен как научно-исследовательская работа с двумя параллельными слоями:
 
-- **Локальный проект (PyCharm)** --- модульный код в `src/` и `scripts/`,
-  покрытый тестами. ASR-модели Whisper base и Wav2Vec2 XLS-R 1B работают на CPU.
+- **Локальный проект (PyCharm)** - модульный код в `src/` и `scripts/`,
+  покрытый 113 тестами. ASR-модели Whisper base и Wav2Vec2 XLS-R 1B работают на CPU.
   LLM-коррекция через HuggingFace Inference API.
   Результаты сохраняются в `experiments/results/`.
 
-- **Google Colab** --- ноутбук `notebooks/03_llm_benchmark_expanded.ipynb`
+- **Google Colab** - ноутбук `notebooks/04_llm_benchmark_final.ipynb`
   с расширенным набором ASR-моделей (6 штук, включая GigaAM и Whisper medium,
-  требующие CUDA). Ноутбук использует те же LLM через HuggingFace Inference API
-  и формирует результаты на полной матрице экспериментов.
+  требующие CUDA). Ноутбук формирует результаты на полной матрице экспериментов
+  и содержит абляционное исследование.
 
 Оба слоя дополняют друг друга: локальный проект обеспечивает воспроизводимость
-и тестируемость, Colab --- доступ к GPU-моделям.
+и тестируемость, Colab - доступ к GPU-моделям и полный набор экспериментов.
 
 ## Структура проекта
 
@@ -67,7 +69,8 @@ llm-asr-correction/
 ├── notebooks/                      # Jupyter-ноутбуки (Colab)
 │   ├── 01_baseline_asr.ipynb       # Первый прототип
 │   ├── 02_llm_benchmark_demo.ipynb # Второй прототип бенчмарка (5 LLM x 4 ASR)
-│   └── 03_llm_benchmark_expanded.ipynb  # Полный бенчмарк (6 ASR x 6 LLM x 5 DS)
+│   ├── 03_llm_benchmark_expanded.ipynb  # Полный бенчмарк (6 ASR x 6 LLM x 5 DS)
+│   └── 04_llm_benchmark_final.ipynb     # Финальный: confidence-aware + фильтр + ablation
 │
 ├── scripts/                        # Скрипты запуска экспериментов
 │   ├── run_benchmark_v2.py         # Точка входа: полный pipeline
@@ -78,7 +81,7 @@ llm-asr-correction/
 ├── src/                            # Исходный код (модули)
 │   ├── asr/                        # ASR-модели
 │   │   ├── base.py                 # Абстрактный интерфейс ASR
-│   │   ├── whisper_transcribe.py   # OpenAI Whisper
+│   │   ├── whisper_transcribe.py   # OpenAI Whisper (+ confidence extraction)
 │   │   ├── wav2vec2_transcribe.py  # Wav2Vec2 XLS-R 1B
 │   │   ├── gigaam_transcribe.py    # Sber GigaAM (только Colab)
 │   │   ├── registry_data.py        # Метаданные ASR-моделей
@@ -86,19 +89,26 @@ llm-asr-correction/
 │   ├── correction/                 # LLM-коррекция
 │   │   ├── llm_client.py           # HuggingFace Inference API клиент
 │   │   ├── clean_response.py       # Постобработка ответов LLM
+│   │   ├── levenshtein.py          # Расстояние Левенштейна (символьный уровень)
+│   │   ├── phonetic_filter.py      # Фонетический фильтр замен LLM
 │   │   ├── prompts.py              # Системные и пользовательские промпты
 │   │   ├── llm_registry_data.py    # Метаданные LLM-моделей
 │   │   └── llm_registry_query.py   # Запросы к LLM registry
 │   ├── evaluation/                 # Метрики
 │   │   ├── metrics.py              # WER, CER
+│   │   ├── error_classification.py # Классификация ошибок: S/I/D
 │   │   └── normalize.py            # Нормализация текста
-│   ├── visualization/              # Визуализация (6 типов графиков)
+│   ├── visualization/              # Визуализация (8 типов графиков)
 │   │   ├── common.py               # ASR_GROUPS, общие настройки
 │   │   ├── analysis.py             # Построение analysis_df
 │   │   ├── wer_change.py           # Grouped barplot по Dataset
 │   │   ├── heatmap.py              # Heatmap по ASR-семействам
 │   │   ├── scatter.py              # Baseline WER vs эффективность
 │   │   ├── radar.py                # Radar по Dataset
+│   │   ├── error_types.py          # Оркестратор графиков типов ошибок
+│   │   ├── error_types_build.py    # Построение error_df (S/I/D по сэмплам)
+│   │   ├── error_types_draw_baseline.py # Типы ошибок в baseline
+│   │   ├── error_types_draw_delta.py    # Дельта ошибок после LLM
 │   │   ├── baseline.py             # ASR baseline comparison
 │   │   ├── stacked_bar.py          # Improved/Degraded/Unchanged
 │   │   ├── stacked_bar_draw.py     # Отрисовка stacked bar
@@ -117,7 +127,7 @@ llm-asr-correction/
 │       ├── memory.py               # Мониторинг памяти
 │       └── save_samples.py         # Сохранение аудио-примеров
 │
-├── tests/                          # Unit-тесты (94 теста)
+├── tests/                          # Unit-тесты (113 тестов, 21 модуль)
 │   ├── test_analysis.py            # Построение analysis_df
 │   ├── test_asr_registry_data.py   # Метаданные ASR registry
 │   ├── test_asr_registry_query.py  # Запросы к ASR registry
@@ -128,15 +138,18 @@ llm-asr-correction/
 │   ├── test_dataset_loader.py      # Загрузка датасетов по ключу
 │   ├── test_datasets_registry_data.py # Метаданные datasets registry
 │   ├── test_datasets_registry_query.py # Запросы и фильтрация датасетов
+│   ├── test_error_classification.py # Классификация ошибок S/I/D
+│   ├── test_levenshtein.py         # Расстояние Левенштейна
 │   ├── test_llm_client.py          # HF API клиент, fallback при ошибках
 │   ├── test_llm_registry_data.py   # Метаданные LLM registry
 │   ├── test_llm_registry_query.py  # Запросы и фильтрация LLM
 │   ├── test_memory.py              # Мониторинг памяти
 │   ├── test_metrics.py             # WER, CER: точные, ошибочные, пустые
 │   ├── test_normalize.py           # Нормализация: регистр, пунктуация
+│   ├── test_phonetic_filter.py     # Фонетический фильтр замен
 │   ├── test_prompts.py             # Промпты EN/RU, выбор языка
 │   └── test_save_samples.py        # Сохранение аудио, лимит, дубликаты
-│   
+│
 ├── .env                            # API-ключи (не коммитится)
 ├── env.example                     # Шаблон .env
 ├── requirements.txt                # Зависимости
@@ -164,7 +177,7 @@ llm-asr-correction/
 | Qwen2.5 72B Instruct | 72B | Dense | Alibaba |
 | GPT-OSS 120B | 120B MoE (5.1B active) | MoE | OpenAI |
 | Qwen3 235B | 235B MoE (22B active) | MoE | Alibaba |
-| DeepSeek V3 | 685B MoE | MoE | DeepSeek |
+| DeepSeek V3 | 685B MoE (37B active) | MoE | DeepSeek |
 
 ## Датасеты
 
@@ -178,68 +191,17 @@ llm-asr-correction/
 
 ## Результаты
 
-### Локальный запуск (2 ASR x 6 LLM x 5 датасетов, 30 сэмплов)
+Полные результаты экспериментов, включая абляционное исследование двухкомпонентного
+метода (confidence-aware + фонетический фильтр), доступны в ноутбуке
+[`notebooks/04_llm_benchmark_final.ipynb`](notebooks/04_llm_benchmark_final.ipynb).
 
-Baseline WER:
-
-| ASR | Dataset | Baseline WER |
-|-----|---------|-------------|
-| Whisper base | LibriSpeech test-clean (EN) | 4.61% |
-| Whisper base | LibriSpeech test-other (EN) | 10.04% |
-| Whisper base | FLEURS English | 13.73% |
-| Whisper base | FLEURS Russian | 25.68% |
-| Whisper base | SOVA audiobooks (RU) | 43.82% |
-| Wav2Vec2 XLS-R 1B | FLEURS Russian | 19.03% |
-| Wav2Vec2 XLS-R 1B | SOVA audiobooks (RU) | 20.96% |
-
-WER Change (%) после LLM-коррекции (положительные = улучшение):
-
-| LLM | WB / LS-clean | WB / LS-other | WB / FLEURS EN | WB / FLEURS RU | WB / SOVA | W2V2 / FLEURS RU | W2V2 / SOVA |
-|-----|--------------|--------------|---------------|---------------|----------|-----------------|------------|
-| Qwen2.5 7B | -48.1 | -26.5 | -1.1 | +3.4 | +3.5 | +15.9 | -11.7 |
-| Llama 3.3 70B | -82.2 | -43.3 | -23.2 | +33.1 | -329.7 | +33.4 | -19.8 |
-| Qwen2.5 72B | -48.2 | -15.9 | +9.2 | +36.8 | +3.3 | +28.7 | +9.7 |
-| GPT-OSS 120B | -83.4 | -11.4 | +1.4 | +2.4 | -9.3 | +15.6 | -8.3 |
-| Qwen3 235B | -24.2 | -8.3 | -13.0 | -17.7 | +3.2 | -2.2 | -2.1 |
-| DeepSeek V3 | -30.6 | -11.1 | +14.0 | +36.2 | +8.4 | +21.3 | +7.0 |
-
-### Google Colab (6 ASR x 6 LLM x 5 датасетов, 30 сэмплов)
-
-114 экспериментов. Полные результаты --- в ноутбуке `notebooks/03_llm_benchmark_expanded.ipynb`.
-
-Лучшие модели по русскому языку (средний WER Change по 10 RU-экспериментам):
-
-| LLM | Средний WER Change (RU) | Стабильность |
-|-----|------------------------|-------------|
-| Qwen3 235B | +22.3% | 10/10 улучшений |
-| Qwen2.5 72B | +17.3% | 10/10 улучшений |
-| DeepSeek V3 | +10.0% | 7/10 улучшений |
-| Llama 3.3 70B | +7.1% | 6/10 улучшений |
-| Qwen2.5 7B | +4.2% | 5/10 улучшений |
-| GPT-OSS 120B | -12.3% | 3/10 улучшений |
-
-### Ключевые выводы
-
-1. **LLM-коррекция стабильно помогает при baseline WER выше 15%.**
-   При baseline ниже 10% модели чаще ухудшают результат.
-
-2. **Лучшая модель для русского --- Qwen2.5 72B (dense).**
-   Стабильно улучшает все 10 русских экспериментов.
-
-3. **Dense-модели стабильнее MoE** для задачи ASR-коррекции.
-
-4. **Wav2Vec2 XLS-R 1B EN --- наиболее благоприятен для LLM-коррекции.**
-   CTC-модель без языковой модели допускает лингвистические ошибки,
-   которые LLM исправляет эффективно.
-
-5. **DeepSeek V3 генерирует галлюцинации на английском.**
-   Добавляет пояснительный текст вместо коррекции. На русском работает адекватно.
-   Реализована система clean_response с детекцией отказов и удалением
-   мета-комментариев для защиты от этой проблемы.
+Ноутбук содержит: 114 экспериментов (6 ASR × 6 LLM × 5 датасетов, 30 сэмплов),
+классификацию ошибок по типам (S/I/D), фонетическую фильтрацию замен,
+анализ confidence scores и 5-уровневое абляционное исследование.
 
 ## Тестирование
 
-94 unit-теста по 19 модулям:
+113 unit-тестов по 21 модулю:
 
 ```bash
 python -m pytest tests/ -v
@@ -280,13 +242,14 @@ python -m scripts.run_benchmark_v2
 
 Pipeline выполняет:
 1. Загрузку датасетов (LibriSpeech EN, FLEURS RU/EN, SOVA RU)
-2. ASR baseline (Whisper base + Wav2Vec2 XLS-R 1B)
-3. LLM-коррекцию через HuggingFace Inference API (6 моделей)
-4. Сохранение analysis CSV + per-correction CSV + JSON-конфига
-5. Генерацию 8 графиков (seaborn + matplotlib)
-6. Логирование в `experiments/logs/`
+2. ASR baseline с извлечением confidence (Whisper base + Wav2Vec2 XLS-R 1B)
+3. Confidence-aware LLM-коррекцию (порог -0.35, пропуск высокоуверенных сэмплов)
+4. Фонетическую фильтрацию замен (порог Левенштейна 0.5)
+5. Сохранение analysis CSV + per-correction CSV + JSON-конфига
+6. Генерацию 10 графиков (seaborn + matplotlib)
+7. Логирование в `experiments/logs/`
 
-Первый запуск: ~20 минут (ASR baseline + LLM API).
+Первый запуск: ~30 минут (ASR baseline + LLM API).
 
 ### Тесты
 
@@ -296,52 +259,21 @@ python -m pytest tests/ -v
 
 ## Визуализация
 
-Бенчмарк генерирует 8 графиков в `experiments/results/`:
+Бенчмарк генерирует 12 графиков в `experiments/results/`:
 
 | График | Файл | Описание |
 |--------|------|----------|
 | WER Change | plot_wer_change.png | Средний WER Change по LLM и Dataset |
-| Heatmap (Whisper base) | plot_heatmap_whisper_base.png | Матрица WER Change для Whisper base |
+| Heatmap (Whisper) | plot_heatmap_whisper_base.png | Матрица WER Change для Whisper base |
 | Heatmap (Wav2Vec2) | plot_heatmap_wav2vec2_family.png | Матрица WER Change для Wav2Vec2 |
 | Scatter | plot_scatter.png | Baseline WER vs эффективность коррекции |
 | Radar | plot_radar.png | Профиль каждой LLM по датасетам |
-| Stacked (Whisper) | plot_stacked_whisper_base.png | Improved/Degraded/Unchanged |
-| Stacked (Wav2Vec2) | plot_stacked_wav2vec2_family.png | Improved/Degraded/Unchanged |
+| Stacked (Whisper) | plot_stacked_whisper_base.png | Improved/Degraded/Unchanged для Whisper |
+| Stacked (Wav2Vec2) | plot_stacked_wav2vec2_family.png | Improved/Degraded/Unchanged для Wav2Vec2 |
 | Baseline | plot_baselines.png | Сравнение ASR baseline WER |
-
-## Дорожная карта
-
-### Выполнено
-
-- [x] Baseline ASR: 6 моделей (Whisper base/medium, GigaAM CTC/RNNT, Wav2Vec2 RU/EN)
-- [x] LLM-коррекция: 6 моделей (7B -- 685B) через HuggingFace Inference API
-- [x] 5 датасетов (3 EN + 2 RU): LibriSpeech, FLEURS, SOVA
-- [x] Registry-архитектура для ASR, LLM и датасетов
-- [x] Модуль визуализации (6 типов графиков, разбивка по ASR-семействам)
-- [x] Постобработка ответов LLM (clean_response: refusal detection, tail removal)
-- [x] Сохранение per-correction CSV для анализа галлюцинаций
-- [x] 94 unit-теста
-
-### Приоритет 1: двухкомпонентный метод
-
-- [ ] **Confidence-aware вызов LLM** --- token-level logprobs из Whisper,
-      LLM-коррекция только для фрагментов с низким confidence
-- [ ] **Фонетическая фильтрация замен** --- post-hoc фильтр на выходе LLM,
-      откат замен слишком далёких от оригинала по расстоянию Левенштейна
-
-### Приоритет 2: углубление анализа
-
-- [ ] **Классификация ошибок** --- разбивка WER на substitution/insertion/deletion
-      через jiwer.process_words()
-- [ ] **Сравнение промптов** --- текущий простой промпт vs TAP-стиль
-      (Task-Activating Prompting с few-shot примерами)
-
-### Приоритет 3: расширение экспериментов
-
-- [ ] **Эксперименты с шумом** --- AWGN + структурированные помехи
-      (фоновая речь, транспорт) на разных SNR уровнях
-- [ ] **N-best гипотезы** --- beam search из Whisper для прокси-метрики confidence
+| Error Types Baseline | plot_error_types_baseline.png | Распределение S/I/D в baseline |
+| Error Types Delta | plot_error_types_delta.png | Изменение S/I/D после LLM-коррекции |
 
 ## Автор
 
-**Алексей Шевченко** --- ВШЭ Нижний Новгород
+**Алексей Шевченко** - ВШЭ Нижний Новгород
